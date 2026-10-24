@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "STM32 ST-Link (OpenOCD)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/make/debug/drone-remote.elf",
+      "device": "STM32F103C8",
+      "configFiles": ["${workspaceFolder}/Config/openocd.cfg"],
+      "runToEntryPoint": "main",
+      "preLaunchTask": "build-debug"
+    }
+  ]
+}

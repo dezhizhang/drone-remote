@@ -1,0 +1,112 @@
+{
+  "packages": [
+    {
+      "name": "STM32CubeF1-CMSIS",
+      "repo": "STMicroelectronics/STM32CubeF1",
+      "commit": "d12e75247d5bcedc734f829b394517ab4c2726e3",
+      "version": "v1.8.7",
+      "rules": [
+        [
+          "Drivers/CMSIS/Include/*.h",
+          "Drivers/CMSIS/Include"
+        ],
+        [
+          "Drivers/CMSIS/LICENSE.txt",
+          "Drivers/CMSIS/LICENSE.txt"
+        ]
+      ],
+      "sha256": "84ec7bf90bc22cc5156bdc64462f4ae7ca244e916589968a57cb883db9b7834c"
+    },
+    {
+      "name": "STM32F1-HAL",
+      "repo": "STMicroelectronics/stm32f1xx-hal-driver",
+      "commit": "fee494a92b5ad331f92ad21f76c66a5cb83773ee",
+      "version": "STM32CubeF1 v1.8.7 gitlink",
+      "rules": [
+        [
+          "Inc/*.h",
+          "Drivers/STM32F1xx_HAL_Driver/Inc"
+        ],
+        [
+          "Inc/Legacy/*.h",
+          "Drivers/STM32F1xx_HAL_Driver/Inc/Legacy"
+        ],
+        [
+          "Src/*.c",
+          "Drivers/STM32F1xx_HAL_Driver/Src"
+        ],
+        [
+          "LICENSE.md",
+          "Drivers/STM32F1xx_HAL_Driver/LICENSE.md"
+        ]
+      ],
+      "sha256": "70444182beec1a7c58cfda19e2c65420c1153422e532f8ee5f71e972e0873987"
+    },
+    {
+      "name": "STM32F1-CMSIS-device",
+      "repo": "STMicroelectronics/cmsis-device-f1",
+      "commit": "c8e9a4a4f16b6d2cb2a2083cbe5161025280fb22",
+      "version": "STM32CubeF1 v1.8.7 gitlink",
+      "rules": [
+        [
+          "Include/stm32f1xx.h",
+          "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h"
+        ],
+        [
+          "Include/stm32f103xb.h",
+          "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+        ],
+        [
+          "Include/system_stm32f1xx.h",
+          "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+        ],
+        [
+          "Source/Templates/system_stm32f1xx.c",
+          "Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c"
+        ],
+        [
+          "Source/Templates/gcc/startup_stm32f103xb.s",
+          "Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/startup_stm32f103xb.s"
+        ],
+        [
+          "License.md",
+          "Drivers/CMSIS/Device/ST/STM32F1xx/License.md"
+        ]
+      ],
+      "sha256": "a48369b6cbd9196c6e15606cb031772e29521043be730d3e3ddcd165f8268541"
+    },
+    {
+      "name": "FreeRTOS-Kernel",
+      "repo": "FreeRTOS/FreeRTOS-Kernel",
+      "commit": "dbf70559b27d39c1fdb68dfb9a32140b6a6777a0",
+      "version": "V11.1.0",
+      "rules": [
+        [
+          "include/*.h",
+          "Middlewares/Third_Party/FreeRTOS/Source/include"
+        ],
+        [
+          "tasks.c",
+          "Middlewares/Third_Party/FreeRTOS/Source/tasks.c"
+        ],
+        [
+          "queue.c",
+          "Middlewares/Third_Party/FreeRTOS/Source/queue.c"
+        ],
+        [
+          "list.c",
+          "Middlewares/Third_Party/FreeRTOS/Source/list.c"
+        ],
+        [
+          "portable/GCC/ARM_CM3/*",
+          "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3"
+        ],
+        [
+          "LICENSE.md",
+          "Middlewares/Third_Party/FreeRTOS/LICENSE.md"
+        ]
+      ],
+      "sha256": "31e570365bc3feb7fbbfa36b93cbc4e2da22f4d02801a1b1513b0f25594f1cea"
+    }
+  ]
+}

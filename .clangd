@@ -1,0 +1,9 @@
+CompileFlags:
+  Remove: [-fstack-usage]
+---
+# This configuration header is normally included by the HAL umbrella header.
+# When opened standalone, avoid stm32f1xx.h including the umbrella back into it.
+If:
+  PathMatch: Core/Inc/stm32f1xx_hal_conf\.h
+CompileFlags:
+  Remove: [-DUSE_HAL_DRIVER]

@@ -1,0 +1,22 @@
+{
+  "C_Cpp.default.compilerPath": "arm-none-eabi-gcc",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+  "clangd.arguments": ["--query-driver=**/arm-none-eabi-gcc"],
+  "C_Cpp.default.intelliSenseMode": "gcc-arm",
+  "C_Cpp.default.cStandard": "c11",
+  "C_Cpp.default.defines": ["USE_HAL_DRIVER", "STM32F103xB", "USER_VECT_TAB_ADDRESS"],
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/Core/Inc",
+    "${workspaceFolder}/Config",
+    "${workspaceFolder}/BSP/Inc",
+    "${workspaceFolder}/App/Inc",
+    "${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc",
+    "${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+    "${workspaceFolder}/Drivers/CMSIS/Include",
+    "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+    "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/include",
+    "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3"
+  ],
+  "files.associations": { "*.h": "c" },
+  "files.exclude": { "**/.cache": true }
+}
