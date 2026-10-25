@@ -35,7 +35,7 @@ APP_SOURCES := $(sort $(wildcard Core/Src/*.c App/Src/*.c BSP/Src/*.c))
 HAL_MODULES := hal hal_cortex hal_rcc hal_rcc_ex hal_gpio hal_gpio_ex \
                hal_dma hal_tim hal_tim_ex hal_flash hal_flash_ex hal_pwr hal_uart
 HAL_SOURCES := $(addprefix $(HAL_DIR)/Src/stm32f1xx_,$(addsuffix .c,$(HAL_MODULES)))
-RTOS_SOURCES := $(addprefix $(RTOS_DIR)/,tasks.c queue.c list.c portable/GCC/ARM_CM3/port.c)
+RTOS_SOURCES := $(addprefix $(RTOS_DIR)/,tasks.c queue.c list.c portable/GCC/ARM_CM3/port.c portable/MemMang/heap_4.c)
 C_SOURCES := $(APP_SOURCES) $(HAL_SOURCES) $(RTOS_SOURCES) \
              $(DEVICE_DIR)/Source/Templates/system_stm32f1xx.c
 ASM_SOURCES := $(DEVICE_DIR)/Source/Templates/gcc/startup_stm32f103xb.s
@@ -123,6 +123,6 @@ help:
 	  'make doctor              Check build/flash tools on PATH' \
 	  'make deps                Restore pinned upstream sources (network needed)' \
 	  'Optional: TOOLCHAIN_BIN=/path/to/bin OPENOCD=/path/to/openocd' \
-	  'Default MCU: STM32F103C8T6 (64 KiB Flash / 20 KiB RAM; confirm exact part)'
+	  'Confirmed MCU: STM32F103C8T6 (64 KiB Flash / 20 KiB RAM)'
 
 -include $(OBJECTS:.o=.d)

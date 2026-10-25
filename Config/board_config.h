@@ -1,7 +1,13 @@
 #ifndef BOARD_CONFIG_H
 #define BOARD_CONFIG_H
 
-/* 暂沿用相邻 drone 的 MCU 配置；烧录前按遥控器芯片丝印核对。 */
+#include "main.h"
+
+/* 用户已确认遥控器主控为 STM32F103C8T6；外设引脚仍待核对。 */
+
+/* IP5305T KEY -> PA0，已确认（2026-10-25）。 */
+#define POWER_KEY_Pin                    GPIO_PIN_0
+#define POWER_KEY_GPIO_Port              GPIOA
 #define BOARD_NAME                      "ATGUIGU drone remote (pinout pending)"
 #define BOARD_EXPECTED_SYSCLK_HZ        64000000UL
 #define BOARD_PINMAP_VERIFIED           0U

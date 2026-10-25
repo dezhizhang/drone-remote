@@ -44,16 +44,20 @@ def main():
         if name != "Reset_Handler":
             require(kind == "T", f"{name} must override the weak default handler")
     for name in ("HAL_InitTick", "HAL_TIM_PeriodElapsedCallback",
-                 "vApplicationGetIdleTaskMemory", "vApplicationStackOverflowHook"):
+                 "vApplicationStackOverflowHook"):
         require(symbols.get(name, (0, ""))[1] == "T", f"Missing strong hook: {name}")
-    for name in ("pvPortMalloc", "vPortFree", "malloc", "_sbrk", "_write"):
-        require(name not in symbols, f"Unexpected heap/stdio dependency: {name}")
+    # Dynamic allocation is on (configSUPPORT_DYNAMIC_ALLOCATION=1):
+    # heap_4 must provide the allocator, while newlib malloc/stdio stay out.
+    for name in ("pvPortMalloc", "vPortFree"):
+        require(symbols.get(name, (0, ""))[1] == "T", f"Missing strong hook: {name}")
+    for name in ("malloc", "_sbrk", "_write"):
+        require(name not in symbols, f"Unexpected stdio dependency: {name}")
 
     binary = args.elf.with_suffix(".bin").read_bytes()
     require(binary[:len(vector)] == vector, "BIN must include the ELF vector table")
     require(len(binary) <= 64 * 1024, "Binary exceeds 64 KiB Flash")
     require(symbols["_ebss"][0] + 2048 <= symbols["_estack"][0], "No room for MSP stack")
-    print(f"PASS: {args.elf}: {len(handlers)} vectors, HAL/RTOS hooks, static allocation, "
+    print(f"PASS: {args.elf}: {len(handlers)} vectors, HAL/RTOS hooks, heap_4 allocation, "
           f"Flash/RAM bounds; BIN={len(binary)} bytes")
 
 

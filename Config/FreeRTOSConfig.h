@@ -17,10 +17,13 @@ extern uint32_t SystemCoreClock;
 #define configIDLE_SHOULD_YIELD                  1
 #define configUSE_TICKLESS_IDLE                  0
 
-/* 两个业务任务及 Idle 都静态分配，入门工程无需 malloc/heap_x.c。 */
-#define configSUPPORT_STATIC_ALLOCATION          1
-#define configSUPPORT_DYNAMIC_ALLOCATION         0
+/* 任务统一用 xTaskCreate 动态创建，由 heap_4.c 提供 pvPortMalloc。 */
+#define configSUPPORT_STATIC_ALLOCATION          0
+#define configSUPPORT_DYNAMIC_ALLOCATION         1
 #define configKERNEL_PROVIDED_STATIC_MEMORY      0
+
+/* F103C8 共 20K SRAM，堆 8K；任务栈深度单位是字（4 字节）。 */
+#define configTOTAL_HEAP_SIZE                    (8U * 1024U)
 #define configUSE_MUTEXES                       0
 #define configUSE_RECURSIVE_MUTEXES              0
 #define configUSE_COUNTING_SEMAPHORES            0

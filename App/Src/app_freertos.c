@@ -1,88 +1,54 @@
+/*
+ * :file description:
+ * :name: /drone-remote/App/Src/app_freertos.c
+ * :author: 张德志
+ * :date created: 2026-10-25 07:18:14
+ * :last editor: 张德志
+ * :date last edited: 2026-10-25 10:46:00
+ */
 #include "app_freertos.h"
 #include "app_fault.h"
 #include "board_config.h"
 #include "usart.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "app_ip5305t.h"
 
-#define INPUT_STACK_WORDS    256U
-#define MONITOR_STACK_WORDS  256U
+void power_task(void *args);
 
-static StaticTask_t input_tcb;
-static StaticTask_t monitor_tcb;
-static StackType_t input_stack[INPUT_STACK_WORDS];
-static StackType_t monitor_stack[MONITOR_STACK_WORDS];
+#define POWER_TASK_STACK_SIZE 512
 
-volatile AppStatus g_app_status = {
-    .board_pinmap_verified = BOARD_PINMAP_VERIFIED
-};
-volatile BSP_RemoteInput g_remote_input;
+// 任务优先级数值越小优先级越小，合法范围 0 ~ configMAX_PRIORITIES-1（当前 0~3）
+#define POWER_TASK_PRIORITY 3
 
-static void InputTask(void *argument)
-{
-    (void)argument;
-    TickType_t previous_wake = xTaskGetTickCount();
-
-    for (;;) {
-        BSP_RemoteInput input = {0};
-        const bool valid = BSP_Remote_ReadInput(&input);
-        g_remote_input = input;
-        g_app_status.input_valid = valid ? 1U : 0U;
-        g_app_status.input_cycles++;
-        g_app_status.input_stack_free_words = uxTaskGetStackHighWaterMark(NULL);
-        /* 固定 50 Hz，后续在 BSP 接入摇杆 ADC 和按键。 */
-        (void)xTaskDelayUntil(&previous_wake, pdMS_TO_TICKS(APP_INPUT_PERIOD_MS));
-    }
-}
-
-static void MonitorTask(void *argument)
-{
-    (void)argument;
-    TickType_t previous_wake = xTaskGetTickCount();
-    static const char pending[] = "remote: FreeRTOS running; input pending\r\n";
-    static const char ready[] = "remote: FreeRTOS running; input ready\r\n";
-
-    /* 只有此任务使用串口，避免多任务日志交错；不引入 printf 的堆和栈开销。 */
-    for (;;) {
-        const bool valid = g_app_status.input_valid != 0U;
-        const char *message = valid ? ready : pending;
-        const uint16_t length = valid ? (uint16_t)(sizeof(ready) - 1U)
-                                      : (uint16_t)(sizeof(pending) - 1U);
-        if (HAL_UART_Transmit(&huart2, (const uint8_t *)message, length,
-                              APP_UART_TX_TIMEOUT_MS) == HAL_OK) {
-            g_app_status.uart_tx_count++;
-        } else {
-            g_app_status.uart_tx_errors++;
-        }
-        g_app_status.monitor_cycles++;
-        g_app_status.monitor_stack_free_words = uxTaskGetStackHighWaterMark(NULL);
-        (void)xTaskDelayUntil(&previous_wake, pdMS_TO_TICKS(APP_MONITOR_PERIOD_MS));
-    }
-}
+TaskHandle_t power_task_handle;
 
 void App_FreeRTOS_Start(void)
 {
-    TaskHandle_t input = xTaskCreateStatic(InputTask, "input", INPUT_STACK_WORDS,
-                                          NULL, 2U, input_stack, &input_tcb);
-    TaskHandle_t monitor = xTaskCreateStatic(MonitorTask, "monitor", MONITOR_STACK_WORDS,
-                                            NULL, 1U, monitor_stack, &monitor_tcb);
-    configASSERT(input != NULL);
-    configASSERT(monitor != NULL);
+
+    xTaskCreate(power_task, "power_task", POWER_TASK_STACK_SIZE, NULL, POWER_TASK_PRIORITY, &power_task_handle);
+
     vTaskStartScheduler();
 }
 
-void vApplicationGetIdleTaskMemory(StaticTask_t **tcb, StackType_t **stack,
-                                  configSTACK_DEPTH_TYPE *stack_words)
-{
-    static StaticTask_t idle_tcb;
-    static StackType_t idle_stack[configMINIMAL_STACK_SIZE];
-    *tcb = &idle_tcb;
-    *stack = idle_stack;
-    *stack_words = configMINIMAL_STACK_SIZE;
-}
-
+/* configCHECK_FOR_STACK_OVERFLOW=2 时内核要求的钩子，走统一故障处理。 */
 void vApplicationStackOverflowHook(TaskHandle_t task, char *task_name)
 {
     (void)task;
-    App_Fault(APP_FAULT_STACK, task_name, 0U);
+    (void)task_name;
+    App_Fault(APP_FAULT_STACK, __FILE__, __LINE__);
+}
+
+void power_task(void *args)
+{
+    (void)args;
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    while (1)
+    {
+        // 启动电源
+        Int_IP5305T_start();
+
+        vTaskDelayUntil(&xLastWakeTime, 10000);
+    }
 }
